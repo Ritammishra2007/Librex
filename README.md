@@ -1,2 +1,2 @@
 # Librex
-It is my project in which i use API integration and UI development and demonstrated my understanding of javascript
+It is my college project in which i used API integration and UI development and demonstrated my understanding of javascript.
