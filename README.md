@@ -1,3 +1,4 @@
 # Librex
-It is my college project in which i used API integration and UI development and demonstrated my understanding of javascript.
- as of 1 April 2026 i have just made the data displayed to the main webpage using the fetch.
+It is my college project in which I used API integration and UI development and demonstrated my understanding of javascript.
+
+ This is the final push where i have added filter and sort feature.
