@@ -19,14 +19,24 @@
             <input type="text" id="search-input" placeholder="Search for books, authors, or subjects...">
             <button id="search-btn" class="btn-primary">Search</button>
         </div>
+
+        <div class="filters-container">
+            <select id="filter-dropdown" class="dropdown">
+                <option value="all">All Books</option>
+                <option value="fulltext">Full Text Available</option>
+            </select>
+
+            <select id="sort-dropdown" class="dropdown">
+                <option value="default">Sort By: Default</option>
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+            </select>
+        </div>
     </header>
 
+
     <main class="display-arena">
-        
-
-        <div id="results-grid" class="grid">
-            </div>
-
+        <div id="results-grid" class="grid"></div>
     </main>
 
     <script src="script.js"></script>

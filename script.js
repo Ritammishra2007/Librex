@@ -1,21 +1,34 @@
 
+let allBooks = []; 
+
 const resultsGrid = document.getElementById('results-grid');
 const loadingIndicator = document.getElementById('loading-indicator');
+const searchInput = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-btn');
+const filterDropdown = document.getElementById('filter-dropdown');
+const sortDropdown = document.getElementById('sort-dropdown');
 
 
-async function fetchBooks() {
+async function fetchBooks(query) {
     if (loadingIndicator) {
-        loadingIndicator.style.display = 'block';
+        loadingIndicator.style.display = 'block'; 
     }
+    resultsGrid.innerHTML = ''; 
 
     try {
-        const response = await fetch('https://openlibrary.org/search.json?q=javascript&limit=12');
+
+        const response = await fetch(`https://openlibrary.org/search.json?q=${query}&limit=20`);
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
         const data = await response.json();
-        const booksArray = data.docs;
-        renderCards(booksArray);
+        
+
+        allBooks = data.docs;
+        
+        renderCards(allBooks);
 
     } 
     catch (error) {
@@ -24,16 +37,18 @@ async function fetchBooks() {
     } 
     finally {
         if (loadingIndicator) {
-            loadingIndicator.style.display = 'none';
+            loadingIndicator.style.display = 'none'; 
         }
     }
 }
 
+
 function renderCards(booksArray) {
     if (booksArray.length === 0) {
-        resultsGrid.innerHTML = '<p style="text-align: center;">No books found.</p>';
+        resultsGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">No books found matching your criteria.</p>';
         return;
     }
+
     const htmlString = booksArray.map(book => {
         const coverImg = book.cover_i 
             ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` 
@@ -53,8 +68,45 @@ function renderCards(booksArray) {
                 </div>
             </div>
         `;
-    }).join('')
+    }).join('');
 
     resultsGrid.innerHTML = htmlString;
 }
-window.addEventListener('DOMContentLoaded', fetchBooks);
+
+function updateDisplay() {
+
+    let currentBooks = [...allBooks];
+
+
+    const filterValue = filterDropdown.value;
+    if (filterValue === 'fulltext') {
+        currentBooks = currentBooks.filter(book => book.has_fulltext === true);
+    }
+
+
+    const sortValue = sortDropdown.value;
+    if (sortValue === 'newest') {
+        currentBooks.sort((a, b) => (b.first_publish_year || 0) - (a.first_publish_year || 0));
+    } else if (sortValue === 'oldest') {
+        currentBooks.sort((a, b) => (a.first_publish_year || 9999) - (b.first_publish_year || 9999));
+    }
+
+    renderCards(currentBooks);
+}
+
+searchBtn.onclick = function() {
+    const query = searchInput.value;
+    if (query !== '') { 
+        fetchBooks(query);
+    }
+};
+
+filterDropdown.onchange = function() {
+    updateDisplay();
+};
+
+sortDropdown.onchange = function() {
+    updateDisplay();
+};
+
+fetchBooks('history');
